@@ -47,7 +47,7 @@ func FetchActor(name string) (Actor, error) {
 	if results.TotalResults == 0 {
 		return a, fmt.Errorf("There are no search results for: %s!", name)
 	}
-
+	a = results.Results[0]
 	err = FetchCredits(&a)
-	return results.Results[0], nil
+	return a, nil
 }
