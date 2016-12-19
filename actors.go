@@ -33,13 +33,9 @@ func FetchActor(name string) (Actor, error) {
 	u := fmt.Sprintf("%s/search/person?api_key=%s&query=%s",
 		ApitRoot, ApiKey, url.QueryEscape(name))
 	results := ActorSearchResults{}
-	req, err := http.NewRequest("GET", u, nil)
 
+	res, err := http.Get(u)
 	a := Actor{}
-	if err != nil {
-		return a, err
-	}
-	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return a, err
 	}
