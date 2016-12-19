@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-var ApitRoot = "https://api.themoviedb.org/3"
+var ApiRoot = "https://api.themoviedb.org/3"
 var ApiKey string
 
 func init() {
@@ -20,6 +20,7 @@ type Actor struct {
 	Name        string  `json:"name"`
 	ID          int     `json:"id"`
 	ProfilePath string  `json:"profile_path"`
+	Credits     []Credit
 }
 
 type ActorSearchResults struct {
@@ -31,7 +32,7 @@ type ActorSearchResults struct {
 
 func FetchActor(name string) (Actor, error) {
 	u := fmt.Sprintf("%s/search/person?api_key=%s&query=%s",
-		ApitRoot, ApiKey, url.QueryEscape(name))
+		ApiRoot, ApiKey, url.QueryEscape(name))
 	results := ActorSearchResults{}
 
 	res, err := http.Get(u)
@@ -46,5 +47,7 @@ func FetchActor(name string) (Actor, error) {
 	if results.TotalResults == 0 {
 		return a, fmt.Errorf("There are no search results for: %s!", name)
 	}
+
+	err = FetchCredits(&a)
 	return results.Results[0], nil
 }

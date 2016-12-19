@@ -16,18 +16,18 @@ func TestFecthActorWithResults(t *testing.T) {
     "page": 1,
     "results": [{
       "id": 239,
-      "name": "Brad Pitt",
+      "name": "Peter Griffin",
       "popularity": 12,
-      "profile_path": "/brad.jpg"
+      "profile_path": "/peter.jpg"
     }],
     "total_pages": 1,
     "total_results": 1
   }`
 
 	FakeServer(body, func() {
-		actor, err := FetchActor("Brad Pitt")
+		actor, err := FetchActor("Peter Griffin")
 		a.NoError(err)
-		a.Equal("Brad Pitt", actor.Name)
+		a.Equal("Peter Griffin", actor.Name)
 	})
 }
 
@@ -40,14 +40,14 @@ func TestFetchActorWithNoResults(t *testing.T) {
     "total_results": 0
   }`
 	FakeServer(body, func() {
-		_, err := FetchActor("Brad Pitt")
+		_, err := FetchActor("Peter Griffin")
 		a.Error(err)
-		a.Equal("There are no search results for: Brad Pitt!", err.Error())
+		a.Equal("There are no search results for: Peter Griffin!", err.Error())
 	})
 }
 
 func FakeServer(body string, f func()) {
-	root := ApitRoot
+	root := ApiRoot
 
 	testServer := httptest.NewServer(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -55,8 +55,8 @@ func FakeServer(body string, f func()) {
 		}))
 	defer testServer.Close()
 
-	ApitRoot = testServer.URL
+	ApiRoot = testServer.URL
 	f()
 
-	ApitRoot = root
+	ApiRoot = root
 }
